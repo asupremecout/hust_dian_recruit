@@ -18,12 +18,10 @@ class Residual(nn.Module):
                                stride) if stride != 1 or in_channels != out_channels else None
 
     # 输出尺寸 = (输入尺寸 - 内核大小 + 2 * 填充) / 步长 + 1
-    # 2个conv2d函数只有一次用了stride，且stride为外界传入，所以如果传入一，则整个一块shape不变
-    # stride如果不为1，或者是 in_channels != out_channels，构建conv3层，在用它处理下x，传入stride，保证x.shape和channel与y一致，这样才可以让y和x相加
-
-    # 2个conv2d函数最终输出尺寸为out_channels，如果self.in_channels != out_channels * BasicBlock.expansion（最终channel）
-    # 则要用downsample nn.Conv2d(self.in_channels, out_channels * BasicBlock.expansion,kernel_size=1, stride=stride, bias=False)
-    # 保证channel一致
+    # 2个conv2d函数只有一次用了stride，且stride为外界传入，所以如果传入1，则整个一块shape不变
+    # stride如果不为1（这种情况是x和y的尺寸width，height不同），或者是 in_channels != out_channels（这种情况是x和y的channel不同），
+    #构建conv3层，在用它处理下x，传入stride，保证x的尺寸和channel与y一致，这样才可以让y和x相加
+    #如果是两种情况都不是，则说明x不需要conv3层的变化也可以和y保持一致，此种情况下，con3是不必要的
 
     # 通过上述设计，保证y和x的形状一致，可以相加
     def forward(self, x):
@@ -40,6 +38,7 @@ class ResNet18(nn.Module):
         self.conv1 = nn.Conv2d(3, 64, 7, 2, 3)  # kernelsize为7x7, stride=2，padding=3，
         self.bn1 = nn.BatchNorm2d(64)
         self.maxpool = nn.MaxPool2d(3, 2, 1)  # 最大池化
+        #下面时4个residual块
         self.layer1 = self._make_layer(64, 64, 2, 1)
         self.layer2 = self._make_layer(64, 128, 2, 2)
         self.layer3 = self._make_layer(128, 256, 2, 2)
@@ -133,4 +132,5 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
