@@ -19,7 +19,7 @@ class Residual(nn.Module):
 
     # 输出尺寸 = (输入尺寸 - 内核大小 + 2 * 填充) / 步长 + 1
     # 2个conv2d函数只有一次用了stride，且stride为外界传入，所以如果传入一，则整个一块shape不变
-    # stride如果不为1，用downsample传入stride，保证x.shape一致
+    # stride如果不为1，或者是 in_channels != out_channels，构建conv3层，在用它处理下x，传入stride，保证x.shape和channel一致，这样才可以让y和x相加
 
     # 2个conv2d函数最终输出尺寸为out_channels，如果self.in_channels != out_channels * BasicBlock.expansion（最终channel）
     # 则要用downsample nn.Conv2d(self.in_channels, out_channels * BasicBlock.expansion,kernel_size=1, stride=stride, bias=False)
@@ -131,4 +131,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
