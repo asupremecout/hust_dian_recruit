@@ -42,7 +42,7 @@ Convi_x(i=2,3,4,5)每一层都各有2个残差块，而每个残差块又有2个
 利用resnet18进行分类任务的结果如下：
  <img width="2808" height="964" alt="image" src="https://github.com/user-attachments/assets/c43f790a-2028-4d33-922e-ceed4e87743d" />
 
-可以看到，resnet18可以有效地解决分类任务，而且准确率也比较高
+可以看到，resnet18可以有效地解决分类任务，而且准确率也比较高，说明在层数较多的时候，resnet仍然可以保持优秀的学习效果
 二．	Transformer架构：
 1，	SelfAttention机制：
 将单个序列的不同位置关联起来以计算同一序列的表示的注意机制。Query，key，value由一个数据经过线性变换而来，自注意力机制和注意力机制的区别就在于，注意力机制的查询和键是不同来源的，例如，在Encoder-Decoder模型中，key是Encoder中的元素，而query是Decoder中的元素。 
