@@ -36,7 +36,7 @@ class PatchEmbedding(nn.Module):
 class VisionTransformer(nn.Module):
 
     def __init__(self, img_size=224, patch_size=16, in_channels=3, num_classes=1000,
-                 embed_dim=768, depth=12, num_heads=12, mlp_ratio=4.0):
+                 embed_dim=768, depth=12, num_heads=12):
         super().__init__()
 
         # Patch embedding
@@ -47,7 +47,16 @@ class VisionTransformer(nn.Module):
         self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim)) #利用 Parameter创造可学习参数
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))
 
-
+        d_ff = int(embed_dim * mlp_ratio)
+        self.encoder = shorter_transformer.TransformerEncoder(
+            num_layers=depth, 
+            d_model=embed_dim, 
+            num_heads=num_heads, 
+            d_ff=d_ff, 
+            dropout=dropout
+        )
+        #利用第二题的TransformerEncoder
+    
     def forward(self, x):
         # Patch embedding
         x = self.patch_embed(x)  # [B, num_patches, embed_dim]
@@ -61,6 +70,8 @@ class VisionTransformer(nn.Module):
         # 添加位置编码
         x = x + self.pos_embed
         #通过广播机制，self.pos_embed会被复制到batch_size个样本上。
+
+        x = self.encoder(x)
 
 
 
