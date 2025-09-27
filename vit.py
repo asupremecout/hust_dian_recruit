@@ -60,6 +60,8 @@ class VisionTransformer(nn.Module):
         # 在序列维度（dim=1）上拼接，得到(batch_size, num_patches+1, embed_dim)
         # 添加位置编码
         x = x + self.pos_embed
+        #通过广播机制，self.pos_embed会被复制到batch_size个样本上。
+
 
 
 
