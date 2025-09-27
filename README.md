@@ -69,5 +69,14 @@ Convi_x(i=2,3,4,5)每一层都各有2个残差块，而每个残差块又有2个
 Transformer的核心是自注意力机制，它关注的是一个序列内部元素之间的关系。LayerNorm对每个词的特征进行归一化，确保了模型更关注特征之间的相对关系，而不是特征的绝对数值大小。这非常契合自注意力机制的工作方式。
 按照题目要求，随机输入一个数据，随机输入和输出的形状如下，可以看到，两者的形状没有发生改变，可知，输入和输出的形状一致
 <img width="1180" height="220" alt="image" src="https://github.com/user-attachments/assets/d8ac2e72-eeae-4b7b-8c56-1b4cf4c9b006" />
+ 
+三．	Vision transformer：
+Vision transformer 尝试把Transformer应用到CV领域。
+ViT首先将输入图像切分为多个固定大小的图像块patches。这些图像块被线性嵌入到固定大小的向量中，每个图像块都被视为一个token，并用于后续的Transformer层中进行处理。例如输入图片大小为224x224，将图片分为固定大小的patch，patch大小为16x16，则每张图像会生成224x224/16x16=196个patch，即输入序列长度为196。每个patch维度16x16x3=768线性投射层的维度为768x768. 输入通过线性投射层之后的维度依然为196x768，还需要加上一个特殊字符cls，因此最终的维度是197x768，已经通过patch embedding将一个视觉问题转化为了一个seq2seq问题。
+ViT同样需要加入位置编码，位置编码可以理解为一张表，表一共有N行，N的大小和输入序列长度相同，每一行代表一个向量，向量的维度和输入序列embedding的维度相同（768）。注意位置编码的操作是sum，而不是concat。加入位置编码信息之后，维度依然是197x768
+LN/multi-head attention/LN：LN输出维度依然是197x768。多头自注意力时，先将输入映射到q，k，v，如果只有一个头，qkv的维度都是197x768，如果有12个头（768/12=64），则qkv的维度是197x64，一共有12组qkv，最后再将12组qkv的输出拼接起来，输出维度是197x768，然后在过一层LN，维度依然是197x768。
+MLP：将维度放大再缩小回去，197x768放大为197x3072，再缩小变为197x768。
+一个block之后维度依然和输入相同，都是197x768，因此可以堆叠多个block。
+<img width="1488" height="763" alt="image" src="https://github.com/user-attachments/assets/2d4ba466-155e-4f4e-bd87-4587c6925b36" />
 
  
