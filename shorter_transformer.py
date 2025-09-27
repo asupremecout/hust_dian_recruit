@@ -57,6 +57,7 @@ class MultiHeadAttention(nn.Module):
         # num_hiddens 表示隐藏层维度，也就是注意力机制的输出维度和内部表示维度。head_dim = num_hiddens // num_heads
         super().__init__()
         assert d_model % num_heads == 0
+        #判断d_model是否可以被整除
 
         self.d_model = d_model
         self.num_heads = num_heads
@@ -169,4 +170,5 @@ def test_transformer():
 
 
 if __name__ == "__main__":
+
     model, output = test_transformer()
