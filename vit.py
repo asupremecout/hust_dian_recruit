@@ -73,6 +73,17 @@ class VisionTransformer(nn.Module):
 
         x = self.encoder(x)
 
+        # 编码器输出: (1, 197, 768)
+        image_representation = x[:, 0]  # 取第一个位置，即 [class] token
+        # image_representation 形状: (1, 768)
+
+
+        classifier_head = nn.Linear(embed_dim, num_classes) # 例如 num_classes=1000
+        logits = classifier_head(image_representation) # (1, 1000)
+        probs = F.softmax(logits, dim=-1)
+
+        return  probs
+
 
 
 
